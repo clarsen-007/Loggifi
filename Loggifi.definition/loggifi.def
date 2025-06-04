@@ -1,0 +1,32 @@
+## Loggifi definition file version: 20250604.v1
+  
+## ClamAV scan
+MSG:"Infected files"
+DSP:"ClamAV scan -- Infected files: "
+
+## Logon attempt - invalid user
+MSG:"Invalid user"
+DSP:"Invalid user logon attempt: "
+
+## Failed logon attempt
+MSG:"Failed password for invalid user"
+DSP:"Password Authentication failed: "
+
+## Invalid Google Auth 2FA
+MSG:"Invalid verification code"
+DSP:"Invalid Google Auth verification code: "
+
+## ScanlogD Port scanning Daemon
+MSG:"scanlogd"
+DSP:"Scanlogd: "
+
+## Fail2ban found and ban
+MSG:"fail2ban.*found"
+DSP:"Fail2Ban - FOUND:"
+
+MSG:"fail2ban.*notice.*ban"
+DSP:"Fail2Ban - BAN or UNBAN: "
+
+## UFW rules
+MSG:"UFW BLOCK"
+DSP:"UFW Blocked IP: "
