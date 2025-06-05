@@ -128,8 +128,6 @@ LOG "Done."
 
         ## Look for issues using loggify.def file
 
-# Script to scan a syslog file for known message patterns defined in a config file
-
 # Clear or create the error log
 > "$LOG_FILE"
 
