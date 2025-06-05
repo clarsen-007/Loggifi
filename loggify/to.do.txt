@@ -2,3 +2,4 @@
 ### Write every line to log file
 ### Error checking
 ### Put temp files somewhere else
+### Fix no Ubuntu log time format difs as does not work on all Linux OS
