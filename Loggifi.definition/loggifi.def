@@ -1,4 +1,4 @@
-## Loggifi definition file version: 20250604.v1
+## Loggifi definition file version: 20250605.v1
   
 ## ClamAV scan
 MSG:"Infected files"
@@ -30,3 +30,7 @@ DSP:"Fail2Ban - BAN or UNBAN: "
 ## UFW rules
 MSG:"UFW BLOCK"
 DSP:"UFW Blocked IP: "
+
+## IPFire Firewall rules
+MSG:"DROP_HOSTILE"
+DSP:"IPFire Hostile IP Blocked: "
