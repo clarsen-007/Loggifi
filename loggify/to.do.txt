@@ -1,0 +1,4 @@
+### TO DO
+### Write every line to log file
+### Error checking
+### Put temp files somewhere else
