@@ -1,4 +1,5 @@
 # Loggifi
-Syslog-ng Log server
 
-Starting code - no version release yet
+Bash script to log suspicious entries in log files...
+
+Still in early release
