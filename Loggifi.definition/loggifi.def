@@ -17,7 +17,7 @@ MSG:"Invalid verification code"
 DSP:"Invalid Google Auth verification code: "
 
 ## ScanlogD Port scanning Daemon
-MSG:"scanlogd:.*ports".
+MSG:"scanlogd:.*ports"
 DSP:"Scanlogd: "
 
 ## Fail2ban found and ban
