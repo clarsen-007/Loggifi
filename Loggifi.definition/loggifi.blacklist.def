@@ -1,4 +1,4 @@
-## Loggifi definition file version: 20250605.v1
+## Loggifi Blacklist definition file version: 20250605.v1
   
 ## ClamAV scan
 MSG:"Infected files"
