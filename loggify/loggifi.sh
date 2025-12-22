@@ -2,7 +2,7 @@
 
         ## Configuration
 
-VERSION="00.01.01.04"
+VERSION="00.01.01.06"
 HISTORICALMIN="20"
 SYSLOG_FILE="/var/log/syslog"
 AUTHLOG_FILE="/var/log/auth.log"
@@ -11,11 +11,14 @@ FAIL2BAN_FILE="/var/log/fail2ban.log"
 OUTPUT_FILE="/tmp/loggifi.syslog.log"
 DEFAULT_LOG="/tmp/loggifi.log"
 LOGGIFI_SYSLOG_FILE="/tmp/loggifi.syslog.log"
-DEF_FILE="/var/lib/loggifi/loggifi.def"
+WHITELIST_FILE_DEF="/var/lib/loggifi/loggifi.whitelist.def"
+BLACKLIST_FILE_DEF="/var/lib/loggifi/loggifi.blacklist.def"
 DEF_FILE_FOLDER="/var/lib/loggifi"
-DEF_FILE_DOWNLOAD="https://raw.githubusercontent.com/clarsen-007/Loggifi/refs/heads/master/Loggifi.definition/loggifi.def"
+DEF_FILE_DOWNLOAD_WHITELIST="https://raw.githubusercontent.com/clarsen-007/Loggifi/refs/heads/master/Loggifi.definition/loggifi.whitelist.def"
+DEF_FILE_DOWNLOAD_BLACKLIST="https://raw.githubusercontent.com/clarsen-007/Loggifi/refs/heads/master/Loggifi.definition/loggifi.blacklist.def"
 LOG_FILE="/tmp/scan_log_error.log"
 LOGGIFI_MESSAGE_FILE="/tmp/loggifi.message.file.txt"
+LOGGIFI_MESSAGE_FILE_TMP="/tmp/loggifi.message.file.tmp.txt"
 VERBOSE=0
 
         ## Commands
@@ -40,7 +43,8 @@ if [[ "$1" == "-u" ]]
                 $MKDIR -p $DEF_FILE_FOLDER
         fi
 
-        $CURL $DEF_FILE_DOWNLOAD > $DEF_FILE
+        $CURL $DEF_FILE_DOWNLOAD_WHITELIST > $WHITELIST_FILE_DEF
+        $CURL $DEF_FILE_DOWNLOAD_BLACKLIST > $BLACKLIST_FILE_DEF
         echo "Definition file downloaded..."
         exit 0
 fi
@@ -68,9 +72,9 @@ ERROR_EXIT() {
 
         ## Verify Loggifi definition file exists
 
-if [[ ! -f "$DEF_FILE" ]]
+if [[ ! -f "$BLACKLIST_FILE_DEF" || ! -f "$WHITELIST_FILE_DEF" ]]
     then
-        ERROR_EXIT "$DEF_FILE file not found... Please run definition update with the -u flag."
+        ERROR_EXIT "Definition files not found... Please run definition update with the -u flag."
 fi
 
         ## Verify syslog file exists
@@ -120,8 +124,6 @@ $AWK -v start="$START_TIME" -v end="$CURRENT_TIME" '
     }
 ' "$ITEM" | tee -a "$OUTPUT_FILE" > /dev/null
 
-## "$ITEM" | tee -a "$OUTPUT_FILE" 2>>"$DEFAULT_LOG"
-
           done
 
 LOG "Done."
@@ -137,24 +139,23 @@ if [[ ! -f "$LOGGIFI_SYSLOG_FILE" ]]; then
     exit 1
 fi
 
-if [[ ! -f "$DEF_FILE" ]]; then
-    echo "ERROR: Definition file not found: $DEF_FILE" | tee -a "$LOG_FILE"
+if [[ ! -f "$BLACKLIST_FILE_DEF" ]]; then
+    echo "ERROR: Definition file not found: $BLACKLIST_FILE_DEF" | tee -a "$LOG_FILE"
     exit 1
 fi
 
-# Extract MSG patterns from loggifi.def
-# These are the strings we want to search for in the syslog
+# Extract MSG patterns from Blacklist loggifi.def
 MSG_PATTERNS=()
 while IFS= read -r line; do
     if [[ "$line" =~ MSG:\"(.*)\" ]]; then
         MSG="${BASH_REMATCH[1]}"
         MSG_PATTERNS+=("$MSG")
     fi
-done < "$DEF_FILE"
+done < "$BLACKLIST_FILE_DEF"
 
 # Check if any MSG patterns were extracted
 if [ ${#MSG_PATTERNS[@]} -eq 0 ]; then
-    echo "ERROR: No MSG patterns found in $DEF_FILE" | tee -a "$LOG_FILE"
+    echo "ERROR: No MSG patterns found in $BLACKLIST_FILE_DEF" | tee -a "$LOG_FILE"
     exit 1
 fi
 
@@ -163,20 +164,57 @@ if [[ -f "$LOGGIFI_MESSAGE_FILE" ]]
         $RM $LOGGIFI_MESSAGE_FILE
 fi
 
+if [[ -f "$LOGGIFI_MESSAGE_FILE_TMP" ]]
+    then
+        $RM $LOGGIFI_MESSAGE_FILE_TMP
+fi
+
 sleep 5
 
 # Now scan the syslog for each extracted pattern
 echo "Scanning $LOGGIFI_SYSLOG_FILE for known messages..."
 for pattern in "${MSG_PATTERNS[@]}"; do
     echo "Searching for: $pattern"
-    grep -F "$pattern" "$LOGGIFI_SYSLOG_FILE" | tee -a "$LOGGIFI_MESSAGE_FILE" \
+    grep -F "$pattern" "$LOGGIFI_SYSLOG_FILE" | tee -a "$LOGGIFI_MESSAGE_FILE_TMP" \
+         || echo "No matches found for: $pattern" | tee -a "$LOG_FILE"
+done
+
+sleep 5
+
+# Extract MSG patterns from Whitelist loggifi.def
+MSG_PATTERNS=()
+while IFS= read -r line; do
+    if [[ "$line" =~ MSG:\"(.*)\" ]]; then
+        MSG="${BASH_REMATCH[1]}"
+        MSG_PATTERNS+=("$MSG")
+    fi
+done < "$WHITELIST_FILE_DEF"
+
+# Check if any MSG patterns were extracted
+if [ ${#MSG_PATTERNS[@]} -eq 0 ]; then
+    echo "ERROR: No MSG patterns found in $WHITELIST_FILE_DEF" | tee -a "$LOG_FILE"
+    exit 1
+fi
+
+sleep 5
+
+# Now scan the syslog for each extracted pattern
+echo "Scanning $LOGGIFI_SYSLOG_FILE for known messages..."
+for pattern in "${MSG_PATTERNS[@]}"; do
+    echo "Searching for: $pattern"
+    grep -F -v "$pattern" "$LOGGIFI_MESSAGE_FILE_TMP" | tee -a "$LOGGIFI_MESSAGE_FILE" \
          || echo "No matches found for: $pattern" | tee -a "$LOG_FILE"
 done
 
 echo "Scan complete."
 
-## Version info
+## Version info:
+## 00.01.01.06
+## Fixed bug - TMP file ( LOGGIFI_MESSAGE_FILE_TMP ) not clearing.
+## 00.01.01.05
+## Added Whitelist definition file and change def file to Blacklist.
+## Added steps to ignote lines in Whitelist def file.
 ## 00.01.01.04
-## Changed definition file to download from Githib page
+## Changed definition file to download from Github page.
 ## 00.01.01.03
-## Release
+## Release.
