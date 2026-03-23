@@ -1,3 +1,4 @@
+<pre>
 File Integrity Monitor using SHA-256
 This will scan through a folder(s) and create a SHA-256 checksum of all files in the folder(s).
 You can then verify file integrity from the checksum database.
@@ -35,3 +36,4 @@ Examples:
 
   Exclude patterns:
     loggifi.integrity.monitor.py --create --exclude .log .tmp .cache
+ <pre>
