@@ -34,6 +34,9 @@ python3 ./loggifi_tasks.py
 Systemd file include:
 Create file under - /etc/systemd/system/loggifi-tasks.service - example file above.
 
+Then reload systemd:
+systemctl daemon-reload
+
 Start service:
 systemctl start loggifi-tasks.service
 
