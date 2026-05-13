@@ -26,3 +26,21 @@ os → standard library
 </pre>
 
 <img src="loggifi.tasks.screenshot.png" alt="Project Screenshot" width="1200">
+
+<pre>
+Run from Linux:
+python3 ./loggifi_tasks.py
+
+Systemd file include:
+Create file under - /etc/systemd/system/loggifi-tasks.service - example file above.
+
+Start service:
+systemctl start loggifi-tasks.service
+
+Stop service:
+systemctl stop loggifi-tasks.service
+
+Service status:
+systemctl status loggifi-tasks.service
+
+</pre>
