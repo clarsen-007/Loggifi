@@ -15,6 +15,12 @@ CERT_PATH_BASE_DIR = "/opt/loggifi/certs/tasks/"                 <<<<<<<<<< Path
 DB_PATH   = os.path.join(DATA_PATH_BASE_DIR, "loggifi_tasks.db")                 <<<<<<<<<< SQLite atabase name
 CERT_FILE = os.path.join(CERT_PATH_BASE_DIR, "cert.pem")                 <<<<<<<<<< Certificate file name
 KEY_FILE  = os.path.join(CERT_PATH_BASE_DIR, "key.pem")                 <<<<<<<<<< Key file name
+
+Modules required for Python:
+sqlite3 → standard library (uses system SQLite)
+json → standard library
+ssl → standard library (built on OpenSSL)
+os → standard library
                                                                           
 </pre>
 
