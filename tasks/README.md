@@ -5,6 +5,7 @@
 tasks: Is a Web UI created via Python and used as a tasks, to do list.
 It includes the ability to run over HTTPS if you add certificates,
 or it can be configured to run behind a reverse proxy or similar setup.
+Includes a dark mode.
 
 Change values in python script as required:
   
