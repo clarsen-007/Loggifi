@@ -1,1 +1,1 @@
-<img src="images/screenshot.png" alt="Project Screenshot" width="600">
+<img src="loggifi.tasks.screenshot.png" alt="Project Screenshot" width="600">
