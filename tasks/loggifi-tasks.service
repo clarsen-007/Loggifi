@@ -1,0 +1,57 @@
+[Unit]
+Description=loggifi.tasks — columnar task management app
+Documentation=https://github.com/loggifi/tasks
+After=network.target
+Wants=network.target
+
+[Service]
+# ── Identity ──────────────────────────────────────────────────────────────────
+# Run as a dedicated user for isolation. Create it first if needed:
+#   sudo useradd --system --no-create-home --shell /usr/sbin/nologin loggifi
+User=loggifi
+Group=loggifi
+
+# ── Paths ─────────────────────────────────────────────────────────────────────
+WorkingDirectory=/opt/loggifi/bin/tasks
+ExecStart=/usr/bin/python3 /opt/loggifi/bin/tasks/loggifi_tasks.py
+
+# ── Restart policy ────────────────────────────────────────────────────────────
+Restart=on-failure
+RestartSec=5s
+StartLimitIntervalSec=60s
+StartLimitBurst=5
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=loggifi-tasks
+
+# ── Hardening ─────────────────────────────────────────────────────────────────
+# Data directory must be writable; everything else locked down
+ReadWritePaths=/var/lib/loggifi
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+NoNewPrivileges=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RemoveIPC=true
+
+# ── Resource limits ───────────────────────────────────────────────────────────
+LimitNOFILE=4096
+MemoryMax=256M
+CPUQuota=50%
+
+# ── Environment ───────────────────────────────────────────────────────────────
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
