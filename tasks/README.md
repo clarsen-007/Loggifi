@@ -2,7 +2,7 @@
 <h2>This is part of my loggifi suite of tools...</h2>
 
 <pre>
-tasks: Is a Web UI created via Python.
+tasks: Is a Web UI created via Python and used as a tasks, to do list.
 It includes ability to run in HTTPS, if you add certificates.
 
 </pre>
