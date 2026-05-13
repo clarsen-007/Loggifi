@@ -24,4 +24,4 @@ os → standard library
                                                                           
 </pre>
 
-<img src="loggifi.tasks.screenshot.png" alt="Project Screenshot" width="900">
+<img src="loggifi.tasks.screenshot.png" alt="Project Screenshot" width="1200">
